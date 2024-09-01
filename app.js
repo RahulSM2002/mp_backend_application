@@ -84,6 +84,21 @@ app.post("/userdata", async (req, res) => {
   }
 });
 
+app.post("/changePassword", async (req, res) => {
+  const { token, password } = req.body;
+  console.log(req, "request");
+
+  const user = jwt.verify(token, JWT_SECRET);
+  const userEmail = user.email;
+  const encryptedPassword = await bcrypt.hash(password, 10);
+  try {
+    await User.updateOne({ email: userEmail }, { password: encryptedPassword });
+    return res.send({ status: "ok", data: "Password Updated Successfully" });
+  } catch (error) {
+    return res.send({ status: "error", data: error });
+  }
+});
+
 app.listen(5000, () => {
   console.log("Server listening on port 5000");
 });
