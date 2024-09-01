@@ -18,7 +18,7 @@ mongoose // Corrected here as well
   });
 
 const JWT_SECRET =
-  "kejfncvwqlkemxndkb r40ru094jrnfoi1ubf90j4-r9h039irei4hr080924ru09@*(U#@UH#DIUHiuheujghvwqlugkuwf86iysvtf86saf7tavaao7fa7vco76f7stav76fs7vsa7tc7ta7isctibgv28h9ug38w2ij9ehoiwh9eh0h93uw7g79h^%R*T&%DCUGU";
+  "kejfncvwqlkemxndkbr40ru094jrnfoi1ubf90j4-r9h039irei4hr080924ru09@*(U#@UH#DIUHiuheujghvwqlugkuwf86iysvtf86saf7tavaao7fa7vco76f7stav76fs7vsa7tc7ta7isctibgv28h9ug38w2ij9ehoiwh9eh0h93uw7g79h^%R*T&%DCUGU";
 require("./userDetails");
 
 const User = mongoose.model("UserInfo");
@@ -66,6 +66,21 @@ app.post("/login", async (req, res) => {
     return res.status(201).send({ status: "ok", token: token });
   } else {
     return res.status(401).send({ status: "error", data: "Invalid password" });
+  }
+});
+
+//Getting UserData
+app.post("/userdata", async (req, res) => {
+  const { token } = req.body;
+
+  try {
+    const user = jwt.verify(token, JWT_SECRET);
+    const userEmail = user.email;
+    User.findOne({ email: userEmail }).then((data) => {
+      return res.send({ status: "ok", data: data });
+    });
+  } catch (err) {
+    return res.send({ status: "error", data: "Invalid token" });
   }
 });
 
